@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>鼠标位置</title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			.show{
+				font-weight: bold;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="show"></div>
+		
+		<script type="text/javascript">
+			var show=document.querySelector(".show");
+			document.onmousemove=function(ev){
+				var e=ev || window.event;
+				show.style.top=e.clientY+"px";
+				show.style.left=e.clientX+10+"px";
+				show.innerHTML=e.clientX+","+e.clientY;
+			}
+		</script>
+	</body>
+</html>

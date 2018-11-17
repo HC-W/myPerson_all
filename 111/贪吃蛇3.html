@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>贪吃蛇</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body,html{
+            width: 100%;
+            height: 100%;
+         background-image: url("img/12.png");
+            position: relative;
+        }
+        @font-face {
+            font-family: YiSu;
+            src: url('font/H.ttf');
+        }
+        .title{
+            font-size: 6em;
+            font-family: YiSu;
+            width: 100%;
+            height: 15%;
+            text-align: center;
+            color: white;
+            text-shadow:0px 0px 10px aqua,0px 0px 20px #52EEFF,0px 0px 30px #20DAFF,0px 0px 40px #12C9FF;
+
+        }
+        .map{
+            width: 900px;
+            height: 600px;
+            background-color: black;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0px 0px 10px aqua,0px 0px 20px #52EEFF,0px 0px 30px #20DAFF,0px 0px 40px #12C9FF;
+        }
+        .snack{
+            width: 30px;
+            height: 30px;
+            position: absolute;
+        }
+        .food{
+            width: 30px;
+            height: 30px;
+            background-color: yellow;
+            position: absolute;
+        }
+        .sortBank{
+            font-family: YiSu;
+            font-size: 2em;
+            width: 200px;
+            height: 50px;
+            border: 2px solid black;
+            background-color:transparent;
+            color: #000;
+            border-radius: 10px;
+            position: absolute;
+            top: 20px;
+            left: 1px;
+            text-align: left;
+        }
+        .sort{
+            width: 50px;
+            height: 50px;
+            color: aqua;
+            background-color: transparent;
+           font-family: 微软雅黑;
+            font-size: 1em;
+            position: absolute;
+            top:0;
+            left: 120px;
+        }
+        .start,.end,.again,.box,.li1,.li2,.li3, .modeBank,.nanDiv,.nanBank,.nan1,.nan2,.nan3{
+            font-family: YiSu;
+            font-size: 2em;
+            width: 200px;
+            height: 50px;
+            border: 2px solid black;
+            background-color:transparent;
+            color: #000;
+            border-radius: 10px;
+            position: absolute;
+            text-align: left;
+            text-align: center;
+
+        }
+        .start{
+            top: 80px;
+            left: 1px;
+        }
+        .end{
+            top: 140px;
+            left: 1px;
+        }
+        .again{
+            top: 200px;
+            left: 1px;
+        }
+
+        .box{
+            top: 260px;
+            left: 1px;
+        }
+        .li1{
+            top:50px;display: none;
+            font-size: 32px;
+
+        }
+        .li2{
+            top:100px;display: none;font-size: 32px;
+        }
+        .li3{
+            top:150px;display: none;font-size: 32px;left: 1px;
+        }
+        .start:hover,.end:hover,.again:hover,.box:hover{
+            color: white;
+            text-shadow:0px 0px 10px aqua,0px 0px 20px #52EEFF,0px 0px 30px #20DAFF,0px 0px 40px #12C9FF;
+        }
+        .modeBank{
+            width: 630px;
+            height: 30px;
+            font-size: 20px;
+            top: 500px;
+            border: none;
+            text-align: left;
+            left: 1px;
+        }
+        .nanDiv{
+            right: 1px;
+            top:20px;
+        }
+        .nanDiv:hover, .nan1:hover, .nan2:hover, .nan3:hover{
+           color: aqua;
+        }
+        .nan1{
+            top:50px;display: none;
+            font-size: 32px;
+        }
+        .nan2{
+            top:100px;display: none;font-size: 32px;
+        }
+        .nan3{
+            top:150px;display: none;font-size: 32px;
+        }
+        .nanBank{
+            right: 1px;
+            top: 250px;
+            text-align: left;
+            border: none;
+            width: 320px;
+            height: 30px;
+            font-size: 20px;
+        }
+        .startOver{
+            font-size: 6em;
+            font-family: YiSu;
+            text-shadow:0px 0px 10px aqua,0px 0px 20px #52EEFF,0px 0px 30px #20DAFF,0px 0px 40px #12C9FF;
+            line-height: 300px;
+            text-align: center;
+            color: white;
+            width: 500px;
+            height: 300px;
+            background-image:url("img/12.png") ;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px aqua,0px 0px 20px #52EEFF,0px 0px 30px #20DAFF,0px 0px 40px #12C9FF;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-top: -230px;
+            margin-left: -250px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+</body>
+<script>
+    var Map;
+    var Snack;
+    var timer;
+    var Food;
+    var sortNumber=0;/*分数值*/
+    var modeTag=2;/*/!*模式切换标*/
+    var nanTag=1;/*难度切换标志*/
+    var tim=300;/*定时器时间值*/
+    var StartOver;
+    var SOtext;/*开始结束提示信息*/
+    function map(){
+        //相关属性
+        this.className='map';
+        //构造地图对象
+        this._map=null;
+        this.createMap= function () {
+           if(this._map==null){
+               this._map=document.createElement('div');
+               this._map.className=this.className;
+               document.body.appendChild(this._map);
+           }
+        }
+    }
+    function snack(){
+        this.className='snack';
+        this.direct='right';
+        this.snackBody=[[4,1,null,'aqua'],[3,1,null,'#FF36FB'],[2,1,null,'#FF36FB']];
+        this.setdirection = function (code) {
+            //采用这种判断组织相反方向的掉头问题
+            if(code==37&&this.direct!='right'){this.direct = "left";}
+            if(code==38&&this.direct!='down'){this.direct = "up";}
+            if(code==39&&this.direct!='left'){this.direct = "right";}
+            if(code==40&&this.direct!='up'){this.direct = "down";}
+        }
+        this.move= function () {
+            //属性跟随,即后一节走前一节的位置
+            for(var i=this.snackBody.length-1;i>0;i--){
+                //刚开始蛇尾是第三节即i=2时，跟随第二节i=1的位置
+                this.snackBody[i][0]=this.snackBody[i-1][0];//行跟随
+                this.snackBody[i][1]=this.snackBody[i-1][1];//列跟随
+            }
+            //改变蛇头位置
+            switch (this.direct) {
+                case "right":this.snackBody[0][0] += 1;break;
+                case "left":this.snackBody[0][0] -= 1;break;
+                case "up":this.snackBody[0][1] -= 1;break;
+                case "down":this.snackBody[0][1] += 1;break;
+            }
+            //蛇撞自己
+            for (var j = 1; j < this.snackBody.length; j++) {
+                if (this.snackBody[0][0] == this.snackBody[j][0] && this.snackBody[0][1] == this.snackBody[j][1]) {
+                    //计时器停止
+                    clearInterval(timer);
+                    StartOver.text='游戏结束';
+                    StartOver.alertDiv();
+                }
+            }
+            switch(modeTag){
+                case 2:
+                    //严格模式蛇撞边界死
+                    if(this.snackBody[0][0] >= 30||this.snackBody[0][0] < 0||
+                            this.snackBody[0][1] >= 20||this.snackBody[0][1] < 0) {
+                        clearInterval(timer);
+                        StartOver.text='游戏结束';
+                        StartOver.alertDiv();
+
+                    }
+
+                break;
+                case 1:
+                //宽松模式穿蛇墙走
+                     if (this.snackBody[0][0] >= 30) {
+                         this.snackBody[0][0] = 0;
+                     }
+                     if (this.snackBody[0][0] < 0) {
+                         this.snackBody[0][0] = 29;
+                     }
+                     if (this.snackBody[0][1] >= 20) {
+                         this.snackBody[0][1] = 0;
+                     }
+                     if (this.snackBody[0][1] < 0) {
+                         this.snackBody[0][1] = 19;
+                     }
+                    break;
+               /* case 3://不实用存在很多bug
+                    //自由模式自动吃
+                        if (Food.x >= this.snackBody[0][0]) {
+                            this.direct = "right";
+                            if (Food.x == this.snackBody[0][0]) {
+                                if (Food.y >= this.snackBody[0][1]) {
+                                    this.direct = "down";
+                                }
+                                else {
+                                    this.direct = "up";
+                                }
+                            }
+                        }
+                        else {
+                            this.direct = "left";
+                            if (Food.x == this.snackBody[0][0]) {
+                                if (Food.y >= this.snackBody[0][1]) {
+                                    this.direct = "down";
+                                }
+                                else {
+                                    this.direct = "up";
+                                }
+                            }
+                        }
+
+                    break;*/
+            }
+            //蛇头找食物,如果蛇头和食物坐标相等，则蛇数组入栈一个最后走过的位置即食物位置，
+            if (this.snackBody[0][0] == Food.x && this.snackBody[0][1] == Food.y) {
+                this.snackBody.push(
+                        [
+                            this.snackBody[this.snackBody.length - 1][0],
+                            this.snackBody[this.snackBody.length - 1][1],
+                            null,
+                            "#FF36FB"//吃完后颜色变化
+                        ]
+                )
+                Food.createFood();
+                sortNumber+=10;
+            }
+          //入栈后的食物位置有null值，调用createSnack()函数会给null创建div
+            Snack.createSnack();//注意此处由于已经有蛇所以不进方法的If，只改变left,top坐标
+        }
+
+        this.createSnack= function () {
+            for(var i=0;i<this.snackBody.length;i++){
+                if(this.snackBody[i][2]==null)
+                {//注意此处的[i][2]指的是上面数组中的null
+                    this.snackBody[i][2]=document.createElement('div');
+                    this.snackBody[i][2].className=this.className;
+                    this.snackBody[i][2].style.backgroundColor=this.snackBody[i][3];
+                    Map._map.appendChild(this.snackBody[i][2]);
+                }
+                //坐标移动
+                    this.snackBody[i][2].style.left=this.snackBody[i][0]*30+"px";
+                    this.snackBody[i][2].style.top=this.snackBody[i][1]*30+"px";
+
+            }
+        }
+
+    }
+    function food(){
+        this.className='food';
+        this._food=null;
+        this.x=0;
+        this.y=0;
+        this.createFood= function () {
+            //随机食物所在的行数和列数
+            this.x = Math.floor(Math.random() * 30);
+            this.y = Math.floor(Math.random() * 20);
+            if(this._food==null){
+                this._food=document.createElement('div');
+                this._food.className=this.className;
+                Map._map.appendChild(this._food);
+            }
+            //食物的位置
+            this._food.style.left=this.x*30+'px';
+            this._food.style.top=this.y*30+'px';
+
+        }
+    }
+    function startOver(){
+        this.className='startOver';
+        this._div=null;
+        this.text='游戏开始';
+        this.createAlert= function () {
+           if(this._div==null){
+               //游戏开始结束弹出框
+               startOver=document.createElement('div');
+               startOver.className=this.className;
+               document.body.appendChild(startOver);
+           }
+        }
+
+        this.alertDiv= function () {
+            startOver.innerHTML=this.text;//由于要更改弹出的text值，因此赋值放在这里
+            startOver.style.display='block';
+            setTimeout(function(){
+                startOver.style.display='none';
+            },500);
+        }
+
+    }
+    window.onload= function () {
+        Map=new map();
+        Map.createMap();
+        Snack=new snack();
+        Snack.createSnack();
+        Food=new food();
+        Food.createFood();
+        StartOver=new startOver();
+        StartOver.createAlert();
+       /* timer=setInterval("Snack.move()", 300);*/
+        document.onkeydown = function (event) {
+            Snack.setdirection(event.keyCode);
+        }
+        //游戏名称
+        var  title=document.createElement('div');
+        title.innerHTML='小小贪吃蛇';
+        title.className='title';
+        document.body.appendChild(title);
+        //得分板
+        var sortBank=document.createElement('div');
+        sortBank.innerHTML='得分:';
+        sortBank.className='sortBank';
+        document.body.appendChild(sortBank);
+        //分数
+        var sort=document.createElement('div');
+        sort.innerHTML=sortNumber;
+        sort.className='sort';
+        sortBank.appendChild(sort);
+        //更新分数
+         setInterval(function () {
+             sort.innerHTML=sortNumber;
+         },1000);
+        //开始按钮
+        var start=document.createElement('div');
+        start.innerHTML='开始';
+        start.className='start';
+        start.onclick= function () {
+            clearInterval(timer);
+            StartOver.text='游戏开始';
+            StartOver.alertDiv();
+            timer=setInterval("Snack.move()", tim);
+        }
+        document.body.appendChild(start);
+        //结束按钮
+        var end=document.createElement('div');
+        end.innerHTML='结束';
+        end.className='end';
+        end.onclick= function () {
+            StartOver.text='游戏结束';
+            StartOver.alertDiv();
+            clearInterval(timer);
+        }
+        document.body.appendChild(end);
+        //重玩按钮
+        var again=document.createElement('div');
+        again.innerHTML='重玩';
+        again.className='again';
+        again.onclick= function () {
+            clearInterval(timer);
+            Map._map.innerHTML=null;
+            delete Snack.snackBody;
+            sortNumber=0;
+            modeTag=1;
+            StartOver.text='游戏开始';
+            StartOver.alertDiv();
+            Snack.snackBody=[[4,1,null,'aqua'],[3,1,null,'#FF36FB'],[2,1,null,'#FF36FB']];
+            timer=setInterval("Snack.move()", tim);
+            Food.createFood();
+            Map._map.appendChild(Food._food);
+    }
+        document.body.appendChild(again);
+        //模式切换
+        var box=document.createElement('div');
+        box.className='box';
+        box.innerHTML='模式切换';
+        document.body.appendChild(box);
+        var li1=document.createElement('li');
+        li1.className='li1';
+        li1.innerHTML='宽松模式';
+        box.appendChild(li1);
+        var li2=document.createElement('li');
+        li2.className='li2';
+        li2.innerHTML='严格模式';
+        box.appendChild(li2);
+        var li3=document.createElement('li');
+        li3.className='li3';
+        li3.innerHTML='自由模式';
+        box.appendChild(li3);
+        //模式切换的点击事件
+        box.onmouseenter= function () {
+            li1.style.display='block';
+            li2.style.display='block';
+            li3.style.display='block';
+        }
+        box.onmouseleave= function () {
+            li1.style.display='none';
+            li2.style.display='none';
+            li3.style.display='none';
+
+        }
+        //模式切换通知
+        var modeBank=document.createElement('div');
+        modeBank.innerHTML='默认宽松模式,现处于：';
+        modeBank.className='modeBank';
+        document.body.appendChild(modeBank);
+        //模式的对应事件
+        li1.onclick= function () {
+            modeBank.innerHTML='';
+            modeTag=1;//宽松模式
+            modeBank.innerHTML+='默认严格模式,现处于：宽松模式';
+
+        }
+        li2.onclick= function () {
+            modeBank.innerHTML='';
+            modeTag=2;//严格模式
+            modeBank.innerHTML+='默认严格模式,现处于：严格模式';
+
+        }
+        li3.onclick= function () {
+            modeBank.innerHTML='';
+            modeTag=3;//自由模式
+            modeBank.innerHTML+='默认严格模式,现处于：自由模式';
+        }
+        //难度选择
+        var nanDiv=document.createElement('div');
+        nanDiv.className='nanDiv';
+        nanDiv.innerHTML='难度切换';
+        document.body.appendChild(nanDiv);
+        var nan1=document.createElement('li');
+        nan1.className='nan1';
+        nan1.innerHTML='简单模式';
+        nanDiv.appendChild(nan1);
+        var nan2=document.createElement('li');
+        nan2.className='nan2';
+        nan2.innerHTML='中等模式';
+        nanDiv.appendChild(nan2);
+        var nan3=document.createElement('li');
+        nan3.className='nan3';
+        nan3.innerHTML='困难模式';
+        nanDiv.appendChild(nan3);
+        //难度切换的点击事件
+        nanDiv.onmouseenter= function () {
+            nan1.style.display='block';
+            nan2.style.display='block';
+            nan3.style.display='block';
+        }
+        nanDiv.onmouseleave= function () {
+            nan1.style.display='none';
+            nan2.style.display='none';
+            nan3.style.display='none';
+
+        }
+        //难度切换通知
+        var nanBank=document.createElement('div');
+        nanBank.innerHTML='难度:默认简单,现处于';
+        nanBank.className='nanBank';
+        document.body.appendChild(nanBank);
+        //难度的对应事件
+        nan1.onclick= function () {
+            nanBank.innerHTML='';
+            tim=300;
+            nanBank.innerHTML+='难度:默认简单,现处于：简单';
+
+        }
+        nan2.onclick= function () {
+            nanBank.innerHTML='';
+            tim=200;
+            nanBank.innerHTML+='难度:默认简单,现处于：中等';
+
+        }
+        nan3.onclick= function () {
+            nanBank.innerHTML='';
+            tim=100;
+            nanBank.innerHTML+='难度:默认简单,现处于：困难';
+        }
+
+    }
+
+</script>
+</html>

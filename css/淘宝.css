@@ -1,0 +1,59 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body{
+	background-color: #F4F4F4;
+}
+.main{
+	width: 1190px;
+	margin: 0 auto;
+}
+.main ul li{
+	list-style: none;
+	display: inline-block;
+	margin-right: 7px;
+}
+.main1 ul li a{
+	font-size: 12px;
+	color: black;
+	text-decoration: none;
+	line-height: 35px;
+}
+.main1{
+	overflow: hidden;
+}
+.main1 .h_ul1{
+	float: left;
+}
+.main1 .h_ul2{
+	float: right;
+}
+
+.h_center{
+	background-color: white;
+	padding-top:10px ;
+	padding-bottom: 5px;
+}
+.main2{
+	overflow: hidden;
+}
+.hc_logo{
+	float: left;
+}
+.hc_form{
+	float: right;
+}
+.hc_form .a_orange a{
+	text-align: center;
+	width: 36px;
+	padding: 5px 0;
+	display:inline-block;
+	font-size: 12px;
+	text-decoration: none;
+	color: green;
+	background-color: #FF5F00;
+	cursor: pointer;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+}

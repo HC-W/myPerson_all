@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>贪吃蛇</title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			.wrap{
+				width: 700px;
+				height: 500px;
+				background-color: darkblue;
+				position: relative;
+			}
+			.all{
+				width: 30px;
+				height: 30px;
+				position: relative;
+				left: 0px;
+				top: 200px;
+				overflow: hidden;
+			}
+			.she{
+				width: 30px;
+				height: 30px;
+				background-color: red;
+				float: left;
+			}
+			.snackbody{
+				width: 30px;
+				height: 30px;
+				float: left;
+			}
+			.food{
+				width: 30px;
+				height: 30px;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="all">
+				<div class="she"></div>
+			</div>
+			
+			<div class="food"></div>
+		</div>
+		<script src="js/封装函数.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//获取元素
+			var wrap=q(".wrap");
+			var all=q(".all");
+			var she=q(".she");
+			var food=q(".food");
+			randXy();
+			
+			//随机food的位置
+			function randXy(){
+				randColor(food,100,200,"backgroundColor");
+				//随机两个值设置food的随机坐标
+				var x=rand(50,window.innerWidth-food.offsetWidth);
+				var y=rand(50,window.innerHeight-food.offsetHeight);
+				//给food的坐标赋值
+				food.style["left"]=x+"px";
+				food.style["top"]=y+"px";
+			}
+			
+			document.addEventListener("keydown",down,false);
+			//键盘按下
+			function down(ev){
+				var e= ev || window.event;
+				switch(e.keyCode){
+					case 37:
+						clearInterval(timer);
+						timer=setInterval(function(){
+							
+						})
+						break;
+					case 38:
+						move(all,"top",-she.offsetHeight);
+						break;
+					case 39:
+						move(all,"left",she.offsetWidth);
+						break;
+					case 40:
+						move(all,"top",she.offsetHeight);
+						break;
+				}
+			}
+			
+			//移动
+			function move(who,css,speed){
+				clearInterval(who.timer);
+				who.timer=setInterval(function(){
+					who.style[css]=pfGetcss(who,css)+speed+"px";
+					if(css=="top"){
+						if(pfGetcss(who,css)<=0 || pfGetcss(who,css)>=window.innerHeight-who.offsetHeight){
+							clearInterval(who.timer);
+							alert("哎呀！碰壁了！")
+						}
+					}
+					if(css=="left"){
+						if(pfGetcss(who,css)<=0 || pfGetcss(who,css)>=window.innerWidth-who.offsetWidth){
+							clearInterval(who.timer);
+							alert("哎呀！碰壁了！")
+						}
+					}
+				},100);
+			}
+			
+			//生成div
+			function newD(){
+				var newDiv=createCss("div");
+				setAtt(newDiv,"class","snackbody");
+				newDiv.style["backgroundColor"]=getCss(food,"backgroundColor");
+				all.insertBefore(newDiv,all.firstElementChild);
+				var shes=qa(".all div");
+				all.style.width=(shes.length+1)*shes[0].offsetWidth+"px";
+//				all.style.left=all.offsetLeft-shes[0].offsetWidth+"px";
+			}
+			
+			
+		</script>
+	</body>
+</html>
